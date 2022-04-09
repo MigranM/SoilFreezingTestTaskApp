@@ -1,0 +1,196 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TestTaskApp"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:vm="clr-namespace:TestTaskApp.ViewModel"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="600" Width="970">
+    <Window.DataContext>
+        <vm:MainVM/>
+    </Window.DataContext>
+    <Window.Resources>
+        <FontFamily x:Key="MainFont">
+            Times New Roman
+        </FontFamily>
+        <SolidColorBrush x:Key="White">
+            #FFFFFF
+        </SolidColorBrush>
+        <SolidColorBrush x:Key="BrightBrightGray">
+            #F5F5F7
+        </SolidColorBrush>
+        <SolidColorBrush x:Key="BrightGray">
+            #E5E5EB
+        </SolidColorBrush>
+        <SolidColorBrush x:Key="Gray">
+            #D9D9DE
+        </SolidColorBrush>
+        <SolidColorBrush x:Key="DarkGray">
+            #A7A8AB
+        </SolidColorBrush>
+        <SolidColorBrush x:Key="DarkDarkGray">
+            #76767A
+        </SolidColorBrush>
+        <SolidColorBrush x:Key="Dark">
+            #333333
+        </SolidColorBrush>
+        <SolidColorBrush x:Key="Black">
+            #000000
+        </SolidColorBrush>
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="Margin" Value="0, 5, 0, 5"/>
+            <Setter Property="Background" Value="{StaticResource BrightBrightGray}"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontFamily" Value="{StaticResource MainFont}"/>
+            <Style.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="CornerRadius" Value="3" />
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource Gray}"/>
+                    <Setter Property="Padding" Value="7, 7, 7, 7"/>
+                </Style>
+            </Style.Resources>
+        </Style>
+        <Style TargetType="{x:Type RadioButton}">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Margin" Value="0, 5, 0, 5"/>
+            <Style.Resources>
+                <Style TargetType="Ellipse">
+                    <Setter Property="Width" Value="15"></Setter>
+                    <Setter Property="Height" Value="15"></Setter>
+                </Style>
+            </Style.Resources>
+        </Style>
+        <Style TargetType="{x:Type Label}">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontFamily" Value="{StaticResource MainFont}"/>
+        </Style>
+    </Window.Resources>
+    <DockPanel >
+        <DockPanel DockPanel.Dock="Top" Height="50" Background="{StaticResource BrightGray}">
+            <DockPanel DockPanel.Dock="Left" Margin="5, 0, 5, 0">
+                <Button Command="{Binding ClearData}" Content="Очистить"></Button>
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Left" Margin="5, 0, 5, 0">
+                <Button Command="{Binding LoadJsonData}" Content="Импорт"></Button>
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Left" Margin="5, 0, 5, 0">
+                <Button Command="{Binding SaveJsonData}" Content="Экспорт"></Button>
+            </DockPanel>
+            <DockPanel></DockPanel>
+        </DockPanel>
+        <DockPanel DockPanel.Dock="right" Width="348" Background="{StaticResource Gray}">
+            <ListView ItemsSource="{Binding Collection}" Height="519" VerticalAlignment="Top" Width="300">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Header">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DockPanel>
+                                        <StackPanel DockPanel.Dock="Top">
+                                            <TextBlock Text="{Binding Path=SoilType}" Foreground="DarkBlue" HorizontalAlignment="Left">
+                                            </TextBlock>
+                                        </StackPanel>
+                                        <StackPanel DockPanel.Dock="Top">
+                                            <TextBlock Text="{Binding Path=SoilType}" Foreground="DarkBlue" HorizontalAlignment="Left">
+                                            </TextBlock>
+                                        </StackPanel>
+                                        <StackPanel DockPanel.Dock="Top">
+                                            <TextBlock Text="{Binding Path=SoilSalinity}" Foreground="DarkBlue" HorizontalAlignment="Center">
+                                            </TextBlock>
+                                        </StackPanel>
+                                        <StackPanel DockPanel.Dock="Top">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition>
+                                                        
+                                                    </ColumnDefinition>
+                                                    <ColumnDefinition></ColumnDefinition>
+                                                    <ColumnDefinition></ColumnDefinition>
+                                                    <ColumnDefinition></ColumnDefinition>
+                                                </Grid.ColumnDefinitions>
+                                            </Grid>
+                                        </StackPanel>
+                                        
+                                    </DockPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+                
+            </ListView>
+        </DockPanel>
+        <DockPanel Background="{DynamicResource BrightGray}">
+            <DockPanel DockPanel.Dock="Top">
+                <StackPanel Margin="40,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="250">
+                    <StackPanel.Resources>
+                        <vm:ComparisonConverter x:Key="ComparisonConverter"></vm:ComparisonConverter>
+                    </StackPanel.Resources>
+                    <Label>Тип грунта:</Label>
+                    <RadioButton Content="Пески" IsChecked="{Binding Path=SoilType,
+                                    Converter={StaticResource ComparisonConverter},
+                                    ConverterParameter={x:Static vm:ТипГрунта.Пески}}"></RadioButton>
+                    <RadioButton Content="Супеси и пылеватые пески" 
+                                 IsChecked="{Binding Path=SoilType,
+                                    Converter={StaticResource ComparisonConverter},
+                                    ConverterParameter={x:Static vm:ТипГрунта.СупесиПылеватыеПески}}">
+                    </RadioButton>
+                    <RadioButton Content="Суглинок" IsChecked="{Binding Path=SoilType,
+                                    Converter={StaticResource ComparisonConverter},
+                                    ConverterParameter={x:Static vm:ТипГрунта.Суглинок}}"></RadioButton>
+                    <RadioButton Content="Глины" IsChecked="{Binding Path=SoilType,
+                                    Converter={StaticResource ComparisonConverter},
+                                    ConverterParameter={x:Static vm:ТипГрунта.Глины}}"></RadioButton>
+                    <RadioButton Content="Торф слабразлож." IsChecked="{Binding Path=SoilType,
+                                    Converter={StaticResource ComparisonConverter},
+                                    ConverterParameter={x:Static vm:ТипГрунта.ТорфСлаборазложившийся}}"></RadioButton>
+                    <RadioButton Content="Торф среднеразлож." IsChecked="{Binding Path=SoilType,
+                                    Converter={StaticResource ComparisonConverter},
+                                    ConverterParameter={x:Static vm:ТипГрунта.ТорфСреднеразложившийся}}"></RadioButton>
+                </StackPanel>
+                <StackPanel Margin="40, 20, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="250">
+                    <StackPanel.Resources>
+                        <vm:ComparisonConverter x:Key="ComparisonConverter"></vm:ComparisonConverter>
+                    </StackPanel.Resources>
+                    <Label>Засоленность грунта:</Label>
+                    <RadioButton Content="Незасоленный" IsChecked="{Binding Path=SoilSalinity,
+                                    Converter={StaticResource ComparisonConverter},
+                                    ConverterParameter={x:Static vm:СтепеньЗасоленности.Незасоленный}}"></RadioButton>
+                    <RadioButton Content="Засоленный (мор. тип)" IsChecked="{Binding Path=SoilSalinity,
+                                    Converter={StaticResource ComparisonConverter},
+                                    ConverterParameter={x:Static vm:СтепеньЗасоленности.ЗасоленныйМорскогоТипа}}"></RadioButton>
+                    <RadioButton Content="Засоленный (кон. тип)" IsChecked="{Binding Path=SoilSalinity,
+                                    Converter={StaticResource ComparisonConverter},
+                                    ConverterParameter={x:Static vm:СтепеньЗасоленности.ЗасоленныйКонтинентальногоТипа}}"></RadioButton>
+                </StackPanel>
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Top">
+                <StackPanel Margin="40, 20, 0, 0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="250">
+                    <Label Content="Степень засоленности:"></Label>
+                    <TextBox Text="{Binding SalinityLevel, Mode=TwoWay}"></TextBox>
+                    <Label Content="Льдистость:"></Label>
+                    <TextBox Text="{Binding Icily, Mode=TwoWay}"></TextBox>
+                </StackPanel>
+                <StackPanel Margin="40, 20, 0, 0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="250">
+                    <Label Content="Суммарная влажность:"></Label>
+                    <TextBox Text="{Binding SoilMoisture, Mode=TwoWay}"></TextBox>
+                    <Label Content="Влажность мерзлого грунта:"></Label>
+                    <TextBox Text="{Binding FrozenSoilMoisture, Mode=TwoWay}"></TextBox>
+                </StackPanel>
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Bottom">
+                <StackPanel Margin="40, 54, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="250">
+                    <Button Command="{Binding CalculateData}" Content="Расчитать"></Button>
+                </StackPanel>
+                <StackPanel Margin="40, 20, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="250">
+                    <Label Content="Температура замерзания:"></Label>
+                    <TextBox Text="{Binding SoilFreezingPointTemperature, Mode=OneWay, TargetNullValue=Значение не просчитано}" IsReadOnly="True"></TextBox>
+                </StackPanel>
+            </DockPanel>
+        </DockPanel>
+    </DockPanel>
+</Window>
