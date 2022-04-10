@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TestTaskApp.Model
 {
-    public interface ICalculatedData<T>
+    public interface ICalculatedData<T> : ICloneable
     {
         T GetCalculatedDataValue();
     }
