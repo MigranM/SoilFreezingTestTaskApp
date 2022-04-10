@@ -145,5 +145,10 @@ namespace TestTaskApp.Model
             }
             return indexOfClosest;
         }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 }
