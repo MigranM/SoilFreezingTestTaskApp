@@ -8,7 +8,7 @@
         xmlns:vm="clr-namespace:TestTaskApp.ViewModel"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="970">
+        Title="MainWindow" Height="600" Width="998">
     <Window.DataContext>
         <vm:MainVM/>
     </Window.DataContext>
@@ -69,7 +69,7 @@
             <Setter Property="FontFamily" Value="{StaticResource MainFont}"/>
         </Style>
     </Window.Resources>
-    <DockPanel >
+    <DockPanel>
         <DockPanel DockPanel.Dock="Top" Height="50" Background="{StaticResource BrightGray}">
             <DockPanel DockPanel.Dock="Left" Margin="5, 0, 5, 0">
                 <Button Command="{Binding ClearData}" Content="Очистить"></Button>
@@ -80,51 +80,103 @@
             <DockPanel DockPanel.Dock="Left" Margin="5, 0, 5, 0">
                 <Button Command="{Binding SaveJsonData}" Content="Экспорт"></Button>
             </DockPanel>
+            <DockPanel DockPanel.Dock="Right" Margin="5, 0, 5, 0">
+                <Button Command="{Binding SavePivotTableJsonData}" Content="Экспорт сводной таблицы" Cursor="Hand"></Button>
+            </DockPanel>
             <DockPanel></DockPanel>
+
         </DockPanel>
-        <DockPanel DockPanel.Dock="right" Width="348" Background="{StaticResource Gray}">
-            <ListView ItemsSource="{Binding Collection}" Height="519" VerticalAlignment="Top" Width="300">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Header">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <DockPanel>
-                                        <StackPanel DockPanel.Dock="Top">
-                                            <TextBlock Text="{Binding Path=SoilType}" Foreground="DarkBlue" HorizontalAlignment="Left">
-                                            </TextBlock>
-                                        </StackPanel>
-                                        <StackPanel DockPanel.Dock="Top">
-                                            <TextBlock Text="{Binding Path=SoilType}" Foreground="DarkBlue" HorizontalAlignment="Left">
-                                            </TextBlock>
-                                        </StackPanel>
-                                        <StackPanel DockPanel.Dock="Top">
-                                            <TextBlock Text="{Binding Path=SoilSalinity}" Foreground="DarkBlue" HorizontalAlignment="Center">
-                                            </TextBlock>
-                                        </StackPanel>
-                                        <StackPanel DockPanel.Dock="Top">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition>
-                                                        
-                                                    </ColumnDefinition>
-                                                    <ColumnDefinition></ColumnDefinition>
-                                                    <ColumnDefinition></ColumnDefinition>
-                                                    <ColumnDefinition></ColumnDefinition>
-                                                </Grid.ColumnDefinitions>
-                                            </Grid>
-                                        </StackPanel>
-                                        
-                                    </DockPanel>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                    </GridView>
-                </ListView.View>
-                
-            </ListView>
+        <DockPanel DockPanel.Dock="Right" Width="375" Background="{StaticResource Gray}">
+            <DockPanel>
+                <ListView ItemsSource="{Binding Collection}" DockPanel.Dock="Top" Name="PivotTableListView" Width="375" Height="481">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDoubleClick">
+                            <i:InvokeCommandAction 
+                                Command="{Binding SetDataFromHistory}"
+                                CommandParameter="{Binding ElementName=PivotTableListView, Path=SelectedItem}">
+                            </i:InvokeCommandAction>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Header">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <DockPanel Width="325">
+                                            <StackPanel DockPanel.Dock="Top">
+                                                <TextBlock Text="{Binding StringFormat=Тип грунта: {0}, Path=SoilType}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                                </TextBlock>
+                                            </StackPanel>
+                                            <StackPanel DockPanel.Dock="Top">
+                                                <TextBlock Text="{Binding StringFormat=Степень засоленности: {0}, Path=SoilSalinity}" HorizontalAlignment="Left">
+                                                </TextBlock>
+                                            </StackPanel>
+                                            <StackPanel DockPanel.Dock="Top">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition></RowDefinition>
+                                                        <RowDefinition></RowDefinition>
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition>
+                                                        </ColumnDefinition>
+                                                        <ColumnDefinition></ColumnDefinition>
+                                                        <ColumnDefinition></ColumnDefinition>
+                                                        <ColumnDefinition></ColumnDefinition>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center">
+                                                        <Label.Content>
+                                                            <TextBlock>
+                                                                 <Run>D</Run>
+                                                                 <Run FontSize="10">sal</Run>
+                                                            </TextBlock>
+                                                        </Label.Content>
+                                                    </Label>
+                                                    <Label Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center">
+                                                        <Label.Content>
+                                                            <TextBlock>
+                                                                 <Run>I</Run>
+                                                                 <Run FontSize="10">tot</Run>
+                                                            </TextBlock>
+                                                        </Label.Content>
+                                                    </Label>
+                                                    <Label Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center">
+                                                        <Label.Content>
+                                                            <TextBlock>
+                                                                 <Run>W</Run>
+                                                                 <Run FontSize="10">tot</Run>
+                                                            </TextBlock>
+                                                        </Label.Content>
+                                                    </Label>
+                                                    <Label Grid.Row="0" Grid.Column="3" HorizontalAlignment="Center">
+                                                        <Label.Content>
+                                                            <TextBlock>
+                                                                 <Run>W</Run>
+                                                                 <Run FontSize="10">m</Run>
+                                                            </TextBlock>
+                                                        </Label.Content>
+                                                    </Label>
+                                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding StringFormat={}{0:0.#####}, Path=SalinityLevel}" HorizontalAlignment="Center"></TextBlock>
+                                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding StringFormat={}{0:0.#####}, Path=Icily}" HorizontalAlignment="Center"></TextBlock>
+                                                    <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding StringFormat={}{0:0.#####}, Path=SoilMoisture}" HorizontalAlignment="Center"></TextBlock>
+                                                    <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding StringFormat={}{0:0.#####}, Path=FrozenSoilMoisture}" HorizontalAlignment="Center"></TextBlock>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel DockPanel.Dock="Top">
+                                                <TextBlock Text="{Binding StringFormat=Температура начала замерзания: {0:0.#####}, Path=SoilFreezingPointTemperature, TargetNullValue=Значение не просчитано}" Foreground="DarkBlue" HorizontalAlignment="Left">
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <DockPanel Height="50" VerticalAlignment="Bottom"></DockPanel>
+            </DockPanel>
         </DockPanel>
-        <DockPanel Background="{DynamicResource BrightGray}">
+        <DockPanel DockPanel.Dock="Left" Background="{DynamicResource BrightGray}">
             <DockPanel DockPanel.Dock="Top">
                 <StackPanel Margin="40,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="250">
                     <StackPanel.Resources>
