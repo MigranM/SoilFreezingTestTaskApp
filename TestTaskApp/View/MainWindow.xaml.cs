@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace TestTaskApp
+namespace TestTaskApp.View
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
@@ -22,7 +22,7 @@ namespace TestTaskApp
     {
         public MainWindow()
         {
-
+            
         }
     }
 }
