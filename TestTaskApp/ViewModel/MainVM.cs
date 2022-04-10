@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using TestTaskApp.Model;
@@ -128,6 +130,12 @@ namespace TestTaskApp.ViewModel
             new JsonDataProvider<SoilFreezingPoint>().Write(soilFreezingPointModel);
         }
 
+        public ICommand SavePivotTableJsonData { get; }
+        public void SavePivotTableJsonDataClick(object parameter)
+        {
+            new JsonDataProvider<List<ICalculatedData<decimal>>>().Write(Collection.ToList());
+        }
+
         public ICommand LoadJsonData { get; }
         public void LoadJsonDataClick(object parameter)
         {
@@ -145,6 +153,16 @@ namespace TestTaskApp.ViewModel
             SoilFreezingPointModel = new SoilFreezingPoint();
         }
 
+        public ICommand SetDataFromHistory { get; }
+        public void HistoryClick(object parameter)
+        {
+            if(parameter is SoilFreezingPoint)
+            {
+                SoilFreezingPointModel = (SoilFreezingPoint)parameter;
+            }
+            
+        }
+
         public ICommand CalculateData { get; }
         public ObservableCollection<ICalculatedData<decimal>> Collection 
         { 
@@ -154,9 +172,19 @@ namespace TestTaskApp.ViewModel
 
         public void CalculateDataClick(object parameter)
         {
-            SoilFreezingPointModel.GetCalculatedDataValue();
+            try
+            {
+                SoilFreezingPointModel.GetCalculatedDataValue();
+            }
+            catch(DivideByZeroException ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
+            
             OnPropertyChanged(nameof(SoilFreezingPointModel.SoilFreezingPointTemperature));
-            Collection.Add(SoilFreezingPointModel);
+            Collection.Insert(0, SoilFreezingPointModel);
+            SoilFreezingPointModel = SoilFreezingPointModel.Clone() as SoilFreezingPoint;
         }
 
         ObservableCollection<ICalculatedData<decimal>> collection;
@@ -176,14 +204,11 @@ namespace TestTaskApp.ViewModel
             LoadJsonData = new MainVMCommand(LoadJsonDataClick);
             ClearData = new MainVMCommand(ClearDataClick);
             CalculateData = new MainVMCommand(CalculateDataClick);
+            SetDataFromHistory = new MainVMCommand(HistoryClick);
+            SavePivotTableJsonData = new MainVMCommand(SavePivotTableJsonDataClick);
 
             Collection = new ObservableCollection<ICalculatedData<decimal>>();
             collection.CollectionChanged += Collection_CollectionChanged;
-            Collection.Add(new SoilFreezingPoint());
-            Collection.Add(new SoilFreezingPoint());
-            Collection.Add(new SoilFreezingPoint());
-            Collection.Add(new SoilFreezingPoint());
-            Collection.Add(new SoilFreezingPoint());
             
 
 
