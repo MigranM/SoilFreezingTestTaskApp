@@ -30,12 +30,12 @@ namespace TestTaskApp.Model
                     }
                 };
                 T data = JsonConvert.DeserializeObject<T>(fileContext, jsonSerializerSettings);
-                if (errors.Any())
+                if (!errors.Any())
                 {
-                    throw new FileFormatException(String.Join("/r/n", errors));
+                    result = true;
+                    return data;
                 }
-                result = true;
-                return data;
+                
             }
             result = false;
             return default;
