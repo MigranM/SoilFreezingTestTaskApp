@@ -10,38 +10,9 @@ using TestTaskApp.Model;
 
 namespace TestTaskApp.ViewModel
 {
-    public class ComparisonConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            return value?.Equals(parameter);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            return value?.Equals(true) == true ? parameter : Binding.DoNothing;
-        }
-    }
-
-    public enum ТипГрунта : uint
-    {
-        Пески = 0,
-        СупесиПылеватыеПески = 1,
-        Суглинок = 2,
-        Глины = 3,
-        ТорфСлаборазложившийся = 4,
-        ТорфСреднеразложившийся = 5,
-    }
-    public enum СтепеньЗасоленности : uint
-    {
-        Незасоленный = 0,
-        ЗасоленныйМорскогоТипа = 1,
-        ЗасоленныйКонтинентальногоТипа = 2
-    }
-   
     public sealed class MainVM : ViewModelBase, INotifyPropertyChanged
     {
-        
+        #region Model
 
         private SoilFreezingPoint soilFreezingPointModel;
         internal SoilFreezingPoint SoilFreezingPointModel
@@ -124,6 +95,16 @@ namespace TestTaskApp.ViewModel
             get => SoilFreezingPointModel.SoilFreezingPointTemperature;
         }
 
+        ObservableCollection<ICalculatedData<decimal>> collection;
+        public ObservableCollection<ICalculatedData<decimal>> Collection
+        {
+            get => collection;
+            set => collection = value;
+        }
+
+        #endregion
+
+        #region Commands
         public ICommand SaveJsonData { get; }
         public void SaveJsonDataClick(object parameter)
         {
@@ -145,6 +126,10 @@ namespace TestTaskApp.ViewModel
             {
                 SoilFreezingPointModel = loadedValue;
             }
+            else
+            {
+                MessageBox.Show("Не удалось считать файл");
+            }
         }
 
         public ICommand ClearData { get; }
@@ -160,15 +145,9 @@ namespace TestTaskApp.ViewModel
             {
                 SoilFreezingPointModel = (SoilFreezingPoint)parameter;
             }
-            
         }
 
         public ICommand CalculateData { get; }
-        public ObservableCollection<ICalculatedData<decimal>> Collection 
-        { 
-            get => collection;
-            set => collection = value;
-        }
 
         public void CalculateDataClick(object parameter)
         {
@@ -176,18 +155,18 @@ namespace TestTaskApp.ViewModel
             {
                 SoilFreezingPointModel.GetCalculatedDataValue();
             }
-            catch(DivideByZeroException ex)
+            catch (DivideByZeroException ex)
             {
                 MessageBox.Show(ex.Message);
                 return;
             }
-            
+
             OnPropertyChanged(nameof(SoilFreezingPointModel.SoilFreezingPointTemperature));
             Collection.Insert(0, SoilFreezingPointModel);
             SoilFreezingPointModel = SoilFreezingPointModel.Clone() as SoilFreezingPoint;
         }
 
-        ObservableCollection<ICalculatedData<decimal>> collection;
+        #endregion
 
         public MainVM()
         {
@@ -197,7 +176,6 @@ namespace TestTaskApp.ViewModel
                 SalinityLevel = 1m,
                 SoilMoisture = 1m,
                 FrozenSoilMoisture = 1m,
-
             };
 
             SaveJsonData = new MainVMCommand(SaveJsonDataClick);
@@ -208,15 +186,21 @@ namespace TestTaskApp.ViewModel
             SavePivotTableJsonData = new MainVMCommand(SavePivotTableJsonDataClick);
 
             Collection = new ObservableCollection<ICalculatedData<decimal>>();
-            collection.CollectionChanged += Collection_CollectionChanged;
-            
-
-
+            collection.CollectionChanged += (sender, e) => OnPropertyChanged("Collection");
         }
 
-        private void Collection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    }
+    public class ComparisonConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            OnPropertyChanged("Collection");
+            return value?.Equals(parameter);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return value?.Equals(true) == true ? parameter : Binding.DoNothing;
         }
     }
+
 }
